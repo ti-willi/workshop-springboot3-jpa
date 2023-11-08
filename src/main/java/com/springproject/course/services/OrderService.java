@@ -48,5 +48,9 @@ public class OrderService {
 			obj.setPayment(payment);
 		}
 	}
+	
+	public void delete(Long id) {
+		repository.deleteById(id);
+	}
 
 }
