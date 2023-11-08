@@ -38,7 +38,7 @@ public class Order implements Serializable {
 	@JoinColumn(name = "client_id")
 	private User client;
 	
-	@OneToMany(mappedBy = "id.order")
+	@OneToMany(mappedBy = "id.order", cascade = CascadeType.ALL)
 	private Set<OrderItem> items = new HashSet<>();
 	
 	@OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
@@ -65,7 +65,7 @@ public class Order implements Serializable {
 	public Instant getMoment() {
 		return moment;
 	}
-
+	
 	public void setMoment(Instant moment) {
 		this.moment = moment;
 	}
@@ -99,7 +99,7 @@ public class Order implements Serializable {
 	public Set<OrderItem> getItems() {
 		return items;
 	}
-	
+	                                                                                                                                          
 	public Double getTotal() {
 		double sum = 0.0;
 		for (OrderItem x : items) {
