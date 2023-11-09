@@ -28,12 +28,12 @@ public class OrderService {
 	}
 	
 	public Order insert(Order obj) {
-		getItems(obj);
-		getPayment(obj);
+		setItems(obj);
+		setPayment(obj);
 		return repository.save(obj);
 	}
 	
-	private void getItems(Order obj) {
+	private void setItems(Order obj) {
 		if (obj.getItems() != null) {
 			for (OrderItem item : obj.getItems()) {
 				item.setOrder(obj);
@@ -41,7 +41,7 @@ public class OrderService {
 		}
 	}
 	
-	private void getPayment(Order obj) {
+	private void setPayment(Order obj) {
 		if (obj.getPayment() != null) {
 			Payment payment = obj.getPayment();
 			payment.setOrder(obj);
@@ -52,5 +52,26 @@ public class OrderService {
 	public void delete(Long id) {
 		repository.deleteById(id);
 	}
-
+	
+	public Order update(Long id, Order obj) {
+		Order entity = repository.getReferenceById(id);
+		updateData(entity, obj);
+		setPayment(entity);
+		
+		return repository.save(entity);
+	}
+	
+	private void updateData(Order entity, Order obj) {
+		entity.setClient(obj.getClient());
+		entity.setMoment(obj.getMoment());
+		entity.setOrderStatus(obj.getOrderStatus());
+		entity.setPayment(obj.getPayment());
+		
+		for (OrderItem item : obj.getItems()) {
+			entity.getItems().clear();
+			item.setOrder(entity);
+			entity.getItems().add(item);
+		}	
+	}
+	
 }
