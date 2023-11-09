@@ -12,6 +12,8 @@ import com.springproject.course.repositories.CategoryRepository;
 import com.springproject.course.services.exceptions.DatabaseException;
 import com.springproject.course.services.exceptions.ResourceNotFoundException;
 
+import jakarta.persistence.EntityNotFoundException;
+
 @Service
 public class CategoryService {
 	
@@ -43,9 +45,14 @@ public class CategoryService {
 	}
 	
 	public Category update(Long id, Category obj) {
-		Category entity = repository.getReferenceById(id);
-		entity.setName(obj.getName());
-		return repository.save(entity);	
+		try {
+			Category entity = repository.getReferenceById(id);
+			entity.setName(obj.getName());
+			return repository.save(entity);	
+		}
+		catch (EntityNotFoundException e) {
+			throw new ResourceNotFoundException(id);
+		}
 	}
 
 }

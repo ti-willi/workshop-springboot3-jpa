@@ -14,6 +14,8 @@ import com.springproject.course.repositories.OrderRepository;
 import com.springproject.course.services.exceptions.DatabaseException;
 import com.springproject.course.services.exceptions.ResourceNotFoundException;
 
+import jakarta.persistence.EntityNotFoundException;
+
 @Service
 public class OrderService {
 
@@ -63,11 +65,15 @@ public class OrderService {
 	}
 	
 	public Order update(Long id, Order obj) {
-		Order entity = repository.getReferenceById(id);
-		updateData(entity, obj);
-		setPayment(entity);
-		
-		return repository.save(entity);
+		try {
+			Order entity = repository.getReferenceById(id);
+			updateData(entity, obj);
+			setPayment(entity);
+			return repository.save(entity);
+		}
+		catch (EntityNotFoundException e) {
+			throw new ResourceNotFoundException(id);
+		}
 	}
 	
 	private void updateData(Order entity, Order obj) {
