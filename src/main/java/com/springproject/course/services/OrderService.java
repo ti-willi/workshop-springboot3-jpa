@@ -10,6 +10,7 @@ import com.springproject.course.entities.Order;
 import com.springproject.course.entities.OrderItem;
 import com.springproject.course.entities.Payment;
 import com.springproject.course.repositories.OrderRepository;
+import com.springproject.course.services.exceptions.ResourceNotFoundException;
 
 @Service
 public class OrderService {
@@ -23,8 +24,7 @@ public class OrderService {
 
 	public Order findById(Long id) {
 		Optional<Order> obj = repository.findById(id);
-		
-		return obj.get();
+		return obj.orElseThrow(() -> new ResourceNotFoundException(id));
 	}
 	
 	public Order insert(Order obj) {
