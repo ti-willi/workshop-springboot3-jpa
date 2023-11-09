@@ -4,12 +4,14 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.springproject.course.entities.Order;
 import com.springproject.course.entities.OrderItem;
 import com.springproject.course.entities.Payment;
 import com.springproject.course.repositories.OrderRepository;
+import com.springproject.course.services.exceptions.DatabaseException;
 import com.springproject.course.services.exceptions.ResourceNotFoundException;
 
 @Service
@@ -50,7 +52,14 @@ public class OrderService {
 	}
 	
 	public void delete(Long id) {
-		repository.deleteById(id);
+		if (!repository.existsById(id))
+			throw new ResourceNotFoundException(id);
+		try {
+			repository.deleteById(id);			
+		}
+		catch (DataIntegrityViolationException e) {
+			throw new DatabaseException(e.getMessage());
+		}
 	}
 	
 	public Order update(Long id, Order obj) {
